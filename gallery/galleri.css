@@ -59,3 +59,7 @@ main {
 .accent-bla {
 	--kh-accent: var(--accent-bla);
 }
+/* The stepper with the larger buttons (web-ui sets --kh-stepper-button with style; an app sets it with a class). */
+.stegare-48 {
+	--kh-stepper-button: 48px;
+}

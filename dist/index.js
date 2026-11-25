@@ -5,3 +5,8 @@ export { EmptyState } from './EmptyState.js';
 export { Notice } from './Notice.js';
 export { Pill, Pills } from './Pill.js';
 export { Chevron, Row } from './Row.js';
+export { FilterChips } from './FilterChips.js';
+export { SegmentedChoice } from './SegmentedChoice.js';
+export { Stepper } from './Stepper.js';
+export { Switch, SwitchRow } from './Switch.js';
+export { TextField } from './TextField.js';

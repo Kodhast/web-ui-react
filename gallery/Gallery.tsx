@@ -1,5 +1,19 @@
 import type { ReactNode } from 'react';
-import { Button, Card, Dots, EmptyState, Notice, Pill, Pills, Row } from '../src';
+import {
+	Button,
+	Card,
+	Dots,
+	EmptyState,
+	FilterChips,
+	Notice,
+	Pill,
+	Pills,
+	Row,
+	SegmentedChoice,
+	Stepper,
+	SwitchRow,
+	TextField
+} from '../src';
 
 /** Material Symbols' add, as in web-ui's gallery. */
 const Add = () => (
@@ -219,6 +233,124 @@ export function Gallery() {
 						</Pill>
 						<Pill tone="ton-gron">Glad</Pill>
 					</Pills>
+				</Part>
+				<Part title="Valchip" shot="AppFilterChip_lagen">
+					<FilterChips
+						aria-label="Form"
+						defaultSelected={['tablett']}
+						options={[
+							{ value: 'tablett', label: 'Tablett' },
+							{ value: 'kapsel', label: 'Kapsel' },
+							{ value: 'plaster', label: 'Plåster', icon: <Add /> },
+							{ value: 'kram', label: 'Kräm', isDisabled: true }
+						]}
+					/>
+				</Part>
+				<Part title="Valda med djup" shot="Valda_djup" depth>
+					<FilterChips
+						aria-label="Visa"
+						defaultSelected={['alla', 'kram']}
+						options={[
+							{ value: 'alla', label: 'Alla' },
+							{ value: 'mediciner', label: 'Mediciner' },
+							{ value: 'kram', label: 'Kräm', isDisabled: true }
+						]}
+					/>
+					<FilterChips
+						aria-label="Medicin"
+						options={[
+							{
+								value: 'ipren',
+								label: 'Ipren 400 mg',
+								icon: <Clock />,
+								pending: 'från 15:40'
+							}
+						]}
+					/>
+					<SegmentedChoice
+						aria-label="Tema"
+						defaultValue="ljust"
+						options={[
+							{ value: 'ljust', label: 'Ljust' },
+							{ value: 'morkt', label: 'Mörkt' },
+							{ value: 'auto', label: 'Auto' }
+						]}
+					/>
+					<FilterChips
+						aria-label="Symtom"
+						defaultSelected={['huvudvark']}
+						options={[{ value: 'huvudvark', label: 'Huvudvärk', count: 4, emphasized: true }]}
+					/>
+				</Part>
+				<Part title="Reglagerader" shot="SwitchRow_varianter">
+					<Card>
+						<SwitchRow title="Påminnelser" subtitle="Varje dag 08:00" defaultSelected />
+						<SwitchRow title="Kvällsdos" />
+						<SwitchRow title="Mående" subtitle="Av" inactive />
+					</Card>
+				</Part>
+				<Part title="Reglagerader med djup, låst" shot="Webb_reglage_djup" depth>
+					<Card>
+						<SwitchRow title="Matlåda" subtitle="Räkna med en portion till" defaultSelected />
+						<SwitchRow title="Veckomeny på söndag" />
+						<SwitchRow title="Låst på" defaultSelected isDisabled />
+						<SwitchRow title="Låst av" isDisabled />
+					</Card>
+				</Part>
+				<Part title="Stegare" shot="QuantityStepper_varianter">
+					<div>
+						<Stepper label="doser per dag" defaultValue={2} />
+					</div>
+					<div>
+						<Stepper label="tabletter" defaultValue={0} isDisabled />
+					</div>
+					<div className="stegare-48">
+						<Stepper label="minsta tid mellan doser" defaultValue={4} min={0} max={24} />
+					</div>
+				</Part>
+				<Part title="Stegare med etikett" shot="QuantityStepper_etikett">
+					<Stepper label="doser per dag" defaultValue={2} showLabel />
+				</Part>
+				<Part title="Stegare med djup" shot="Webb_stegare_djup" depth>
+					<div>
+						<Stepper label="portioner" defaultValue={4} min={1} max={12} />
+					</div>
+					<div>
+						<Stepper label="portioner" defaultValue={1} min={1} max={12} />
+					</div>
+				</Part>
+				<Part title="Segmentval" shot="AppSegmentedChoice_tema">
+					<SegmentedChoice
+						aria-label="Tema"
+						defaultValue="system"
+						options={[
+							{ value: 'ljust', label: 'Ljust' },
+							{ value: 'morkt', label: 'Mörkt' },
+							{ value: 'system', label: 'System' }
+						]}
+					/>
+				</Part>
+				<Part title="Textfält" shot="AppTextField_lagen">
+					<TextField
+						label="Namn"
+						defaultValue="Solkräm"
+						description="Som det står på förpackningen"
+					/>
+					<TextField label="Styrka" errorMessage="Ange en styrka" />
+					<TextField
+						label="Anteckning"
+						multiline
+						defaultValue="Smörj in var annan timme, och efter bad."
+					/>
+					<TextField label="Doshöjning" defaultValue="25" inputMode="numeric" suffix="mg" />
+				</Part>
+				<Part title="Textfält med ikonknapp" shot="Webb_textfalt_ikonknapp">
+					<TextField
+						label="När är visningen?"
+						defaultValue="sön 23 nov kl 13–14"
+						description="Läses som söndag 23 november."
+						action={{ icon: <Clock />, label: 'Välj dag och tid', onPress: () => {} }}
+					/>
 				</Part>
 				<Part title="Meddelanderad" shot="NoticeBanner_lagen">
 					<Notice
