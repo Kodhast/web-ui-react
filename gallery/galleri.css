@@ -49,3 +49,13 @@ main {
 	gap: 12px 16px;
 	align-items: center;
 }
+/* A card's content without rows, as in web-ui's gallery. */
+.prov {
+	display: flex;
+	flex-direction: column;
+	padding: 8px 12px;
+}
+/* The row's accent: the app sets --kh-accent in its own class (Row accentClass). */
+.accent-bla {
+	--kh-accent: var(--accent-bla);
+}
