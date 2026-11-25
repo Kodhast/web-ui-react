@@ -1,7 +1,7 @@
 /*
- * Testtemat: android-ui:s testpalett (ReseApotekets färger, TestPalette i ui-components/src/test),
- * så att galleriets skärmdumpar kan läggas bredvid Roborazzi-bilderna. Bara för galleriet; varje app
- * har sitt eget tema. Roboto som i Robolectric (variabel, latin, OFL – se fonts/OFL.txt).
+ * The test theme, copied from web-ui's gallery/theme-test.css: android-ui's test palette (TestPalette in
+ * ui-components/src/test), so that the screenshots can be laid next to web-ui's and Roborazzi's. Only for
+ * the gallery; every app has its own theme. Roboto as in Robolectric (variable, latin, OFL – fonts/OFL.txt).
  */
 @font-face {
 	font-family: 'Roboto Galleri';
@@ -120,7 +120,7 @@
 	--ton-bla-content: #c6e5f7;
 }
 
-/* Testtemats toner som en app skriver dem: på elementet som har tonen. */
+/* The test theme's tones as an app writes them: on the element that has the tone. */
 .ton-gron {
 	--kh-tone-container: var(--ton-gron-container);
 	--kh-tone-content: var(--ton-gron-content);

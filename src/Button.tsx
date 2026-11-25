@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { Button as AriaButton, type ButtonProps as AriaButtonProps } from 'react-aria-components';
 import { Dots } from './Dots.js';
 
@@ -15,12 +15,16 @@ export interface ButtonProps extends Omit<
 	compact?: boolean;
 	/** Full width (`kh-btn--block`). */
 	block?: boolean;
-	/** Working: the dots replace the icon, presses are ignored and the colours stay (`aria-busy`). */
+	/**
+	 * Working: the dots replace the icon, presses are ignored, and colours and focus stay (`aria-busy`).
+	 * `isDisabled` wins: a disabled button is never shown as working.
+	 */
 	isPending?: boolean;
 	/** An `<svg>` before the label, as in web-ui; the dots take its place while pending. */
 	icon?: ReactNode;
 	/** The label. */
 	children: ReactNode;
+	ref?: Ref<HTMLButtonElement>;
 }
 
 const variantClass: Record<ButtonVariant, string | null> = {
@@ -48,11 +52,12 @@ export function Button({
 	variant,
 	compact,
 	block,
-	isPending = false,
+	isPending: pending = false,
 	icon,
 	children,
 	...props
 }: ButtonProps) {
+	const isPending = pending && !props.isDisabled;
 	return (
 		<AriaButton
 			{...props}

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { createRef } from 'react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { Button, buttonClass, type ButtonVariant } from './Button';
@@ -70,6 +71,24 @@ describe('Button', () => {
 		expect(dots?.querySelectorAll('i')).toHaveLength(2);
 		expect(button.querySelector('svg')).toBeNull();
 		expect(button.firstElementChild?.tagName).toBe('KH-DOTS');
+	});
+
+	it('shows a disabled button as off, not working, when both are set', () => {
+		render(
+			<Button isDisabled isPending>
+				Spara
+			</Button>
+		);
+		const button = screen.getByRole('button');
+		expect(button).toBeDisabled();
+		expect(button).not.toHaveAttribute('aria-busy');
+		expect(button.querySelector('kh-dots')).toBeNull();
+	});
+
+	it('passes a ref to the button element', () => {
+		const ref = createRef<HTMLButtonElement>();
+		render(<Button ref={ref}>Spara</Button>);
+		expect(ref.current).toBe(screen.getByRole('button'));
 	});
 
 	it('keeps a lone text label while pending', () => {

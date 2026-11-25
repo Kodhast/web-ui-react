@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button } from '../src';
+import { Button, Dots } from '../src';
 
 /** Material Symbols' add, as in web-ui's gallery. */
 const Add = () => (
@@ -118,6 +118,12 @@ export function Gallery() {
 					<Button block isPending icon={<Add />}>
 						Hämtar
 					</Button>
+				</Part>
+				<Part title="Prickar" shot="BrandDots_lagen" time={225}>
+					<div className="rad">
+						<Dots />
+						<Dots bouncing />
+					</div>
 				</Part>
 			</main>
 		</>

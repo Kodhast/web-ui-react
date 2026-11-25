@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Skärmdumpar av galleriets delar, ljust och mörkt, i screenshots/ med web-ui:s och Roborazzi-bildernas
-// namn (t.ex. AppButton_djup_light.png), så att de kan läggas bredvid web-ui:s bilder.
-// 400 breda i 2,925 skala = 1170 bildpunkter, som Roborazzi-bilderna. Tas lokalt och checkas in; CI tar inga.
-// I en molnsession: PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium.
+// Screenshots of the gallery's parts, light and dark, in screenshots/ with web-ui's and Roborazzi's names
+// (e.g. AppButton_djup_light.png), so that they can be laid next to web-ui's images.
+// 400 wide at scale 2.925 = 1170 pixels, like the Roborazzi images. Taken locally and checked in; CI takes none.
+// In a cloud session: PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium.
 import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,7 +39,7 @@ try {
 		for (const frame of frames) {
 			const name = await frame.getAttribute('data-skarmdump');
 			await frame.scrollIntoViewIfNeeded();
-			// data-tid: prickar som hoppar står still så många ms in i perioden (som Roborazzi-provets klocka).
+			// data-tid: bouncing dots stand still this many ms into the period (like the Roborazzi test's clock).
 			const time = await frame.getAttribute('data-tid');
 			if (time) {
 				await frame.evaluate((element, ms) => {

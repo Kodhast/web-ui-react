@@ -16,7 +16,8 @@ export function buttonClass({ variant = 'tonal', compact = false, block = false 
         .join(' ');
 }
 /** web-ui's `.kh-btn` (android-ui's AppButton) with React Aria's press, focus and keyboard handling. */
-export function Button({ variant, compact, block, isPending = false, icon, children, ...props }) {
+export function Button({ variant, compact, block, isPending: pending = false, icon, children, ...props }) {
+    const isPending = pending && !props.isDisabled;
     return (_jsxs(AriaButton, { ...props, isPending: isPending, 
         // React Aria marks a pending button aria-disabled; web-ui tells busy from off by aria-busy.
         render: (domProps) => _jsx("button", { ...domProps, "aria-busy": isPending || undefined }), className: buttonClass({ variant, compact, block }), children: [isPending ? _jsx(Dots, { bouncing: true }) : icon, children] }));

@@ -1,4 +1,4 @@
-/* Galleriets egen layout – inte biblioteket. Samma ramar som web-ui:s galleri, så att bilderna går att lägga bredvid. */
+/* The gallery's own layout, not the library. The same frames as web-ui's gallery, so the images line up. */
 body {
 	margin: 0;
 }
@@ -32,7 +32,7 @@ main {
 	margin: 0;
 	padding: 0 16px;
 }
-/* Ramen som skärmdumpen tas av: 400 breda som Roborazzi-bilderna, med sidans luft. */
+/* The frame the screenshot is taken of: 400 wide like the Roborazzi images, with the page's margin. */
 .ram {
 	inline-size: 400px;
 	max-inline-size: 100%;

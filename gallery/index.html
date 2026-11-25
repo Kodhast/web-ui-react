@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>web-ui-react – galleri</title>
 		<script>
-			// Ljust eller mörkt: ?tema=mork|ljust, annars systemets val.
+			// Light or dark: ?tema=mork|ljust, otherwise the system's choice.
 			const tema = new URLSearchParams(location.search).get('tema');
 			document.documentElement.dataset.theme =
 				tema === 'mork'
