@@ -1,0 +1,35 @@
+# Taggar versionen: Actions → Tagga → Run workflow på main. Skapar v<version> ur package.json på main:s
+# senaste commit. Körs bara för hand; proven har redan körts i PR:en.
+name: Tagga
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tagga
+  cancel-in-progress: false
+
+jobs:
+  tagga:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tagga v<version>
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF_NAME" != "main" ]; then
+            echo "::error::Kör taggningen på main, inte $GITHUB_REF_NAME"
+            exit 1
+          fi
+          tag="v$(node -p "require('./package.json').version")"
+          if git ls-remote --exit-code --tags origin "$tag" >/dev/null; then
+            echo "::error::$tag finns redan – höj version i package.json"
+            exit 1
+          fi
+          git tag "$tag" "$GITHUB_SHA"
+          git push origin "$tag"
+          echo "Taggade $tag på $GITHUB_SHA." >> "$GITHUB_STEP_SUMMARY"

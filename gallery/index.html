@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="sv">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>web-ui-react – galleri</title>
+		<script>
+			// Ljust eller mörkt: ?tema=mork|ljust, annars systemets val.
+			const tema = new URLSearchParams(location.search).get('tema');
+			document.documentElement.dataset.theme =
+				tema === 'mork'
+					? 'dark'
+					: tema === 'ljust'
+						? 'light'
+						: matchMedia('(prefers-color-scheme: dark)').matches
+							? 'dark'
+							: 'light';
+		</script>
+	</head>
+	<body class="kh-app">
+		<div id="root"></div>
+		<script type="module" src="./main.tsx"></script>
+	</body>
+</html>
