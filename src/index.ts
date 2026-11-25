@@ -1,5 +1,7 @@
+export { BottomSheet, type BottomSheetProps } from './BottomSheet.js';
 export { Button, buttonClass, type ButtonProps, type ButtonVariant } from './Button.js';
 export { Card, type CardProps } from './Card.js';
+export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog.js';
 export { Dots } from './Dots.js';
 export { EmptyState, type EmptyStateProps } from './EmptyState.js';
 export { Notice, type NoticeProps } from './Notice.js';

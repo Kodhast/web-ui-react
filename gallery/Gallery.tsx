@@ -1,7 +1,9 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
+	BottomSheet,
 	Button,
 	Card,
+	ConfirmDialog,
 	Dots,
 	EmptyState,
 	FilterChips,
@@ -63,6 +65,7 @@ function Part({
 	shot,
 	depth = false,
 	time,
+	fullscreen = false,
 	children
 }: {
 	title: string;
@@ -70,6 +73,11 @@ function Part({
 	depth?: boolean;
 	/** Bouncing dots stand still this many ms into the period in the screenshot (data-tid in web-ui). */
 	time?: number;
+	/**
+	 * A modal dialog or sheet (data-helskarm in web-ui): the screenshot presses the frame's first button and takes the
+	 * whole window, since the backdrop covers it.
+	 */
+	fullscreen?: boolean;
 	children: ReactNode;
 }) {
 	return (
@@ -77,10 +85,96 @@ function Part({
 			<h2 className="kh-text-caption">
 				{title} · {shot}
 			</h2>
-			<div className={depth ? 'ram kh-depth' : 'ram'} data-skarmdump={shot} data-tid={time}>
+			<div
+				className={depth ? 'ram kh-depth' : 'ram'}
+				data-skarmdump={shot}
+				data-tid={time}
+				data-helskarm={fullscreen ? '' : undefined}
+			>
 				{children}
 			</div>
 		</section>
+	);
+}
+
+/** Made-up cards behind a modal, as in web-ui's gallery, so that the blur shows. */
+const Behind = () => (
+	<>
+		<Card>
+			<Prov title="Måndag 17 nov" subtitle="08:00–16:30 · 8 h" />
+		</Card>
+		<Card>
+			<Prov title="Tisdag 18 nov" subtitle="07:45–16:15 · 8 h" />
+		</Card>
+		<Card>
+			<Prov title="Onsdag 19 nov" subtitle="08:30–17:00 · 8 h" />
+		</Card>
+		<Card>
+			<Prov title="Torsdag 20 nov" subtitle="08:00–15:00 · 6,5 h" />
+		</Card>
+		<Card>
+			<Prov title="Fredag 21 nov" subtitle="08:00–16:00 · 7,5 h" />
+		</Card>
+		<Card>
+			<Prov title="Vecka 47" subtitle="Låst · 38 h" />
+		</Card>
+	</>
+);
+
+function DialogDemo() {
+	const [isOpen, setOpen] = useState(false);
+	return (
+		<>
+			<div className="rad">
+				<Button compact onPress={() => setOpen(true)}>
+					Öppna dialogen
+				</Button>
+			</div>
+			<Behind />
+			<ConfirmDialog
+				title="Lås upp veckan?"
+				text="Vecka 47 är skickad. Ändringen loggas med ditt skäl."
+				confirmLabel="Lås upp"
+				onConfirm={() => {}}
+				isOpen={isOpen}
+				onOpenChange={setOpen}
+			>
+				<TextField label="Skäl" defaultValue="Glömde fredagens möte" />
+			</ConfirmDialog>
+		</>
+	);
+}
+
+function SheetDemo() {
+	const [isOpen, setOpen] = useState(false);
+	return (
+		<>
+			<div className="rad">
+				<Button compact onPress={() => setOpen(true)}>
+					Öppna arket
+				</Button>
+			</div>
+			<Behind />
+			<BottomSheet
+				title="Ändra intervall"
+				subtitle="Torsdag 20 november"
+				isOpen={isOpen}
+				onOpenChange={setOpen}
+				footer={
+					<>
+						<Button variant="text" onPress={() => setOpen(false)}>
+							Avbryt
+						</Button>
+						<Button variant="primary" onPress={() => setOpen(false)}>
+							Spara
+						</Button>
+					</>
+				}
+			>
+				<TextField label="Från" defaultValue="08:00" inputMode="numeric" />
+				<TextField label="Till" defaultValue="15:00" inputMode="numeric" />
+			</BottomSheet>
+		</>
 	);
 }
 
@@ -389,6 +483,12 @@ export function Gallery() {
 							text="Logga några dagar till så syns kurvan."
 						/>
 					</Card>
+				</Part>
+				<Part title="Ark med oskärpa" shot="AppBottomSheet_oskarpa" depth fullscreen>
+					<SheetDemo />
+				</Part>
+				<Part title="Dialog med oskärpa" shot="ConfirmDialog_oskarpa" depth fullscreen>
+					<DialogDemo />
 				</Part>
 			</main>
 		</>

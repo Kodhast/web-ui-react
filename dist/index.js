@@ -1,5 +1,7 @@
+export { BottomSheet } from './BottomSheet.js';
 export { Button, buttonClass } from './Button.js';
 export { Card } from './Card.js';
+export { ConfirmDialog } from './ConfirmDialog.js';
 export { Dots } from './Dots.js';
 export { EmptyState } from './EmptyState.js';
 export { Notice } from './Notice.js';
