@@ -1,0 +1,8 @@
+node_modules
+coverage
+gallery-dist
+*.local
+test-results
+.DS_Store
+*.log
+spike

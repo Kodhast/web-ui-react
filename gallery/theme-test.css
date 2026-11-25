@@ -1,0 +1,131 @@
+/*
+ * The test theme, copied from web-ui's gallery/theme-test.css: android-ui's test palette (TestPalette in
+ * ui-components/src/test), so that the screenshots can be laid next to web-ui's and Roborazzi's. Only for
+ * the gallery; every app has its own theme. Roboto as in Robolectric (variable, latin, OFL – fonts/OFL.txt).
+ */
+@font-face {
+	font-family: 'Roboto Galleri';
+	src: url('fonts/roboto-latin-wght-normal.woff2') format('woff2');
+	font-weight: 100 900;
+	font-display: block;
+}
+
+:root {
+	--kh-font-body: 'Roboto Galleri', system-ui, sans-serif;
+	--kh-font-heading: 'Roboto Galleri', system-ui, sans-serif;
+	--kh-type-screen-title: 800 34px/38px var(--kh-font-heading);
+	--kh-type-big-number: 800 28px/32px var(--kh-font-heading);
+	--kh-type-headline: 800 22px/28px var(--kh-font-heading);
+	--kh-type-section-title: 800 18px/24px var(--kh-font-heading);
+	--kh-type-item-title: 700 16px/22px var(--kh-font-body);
+	--kh-type-item-subtitle: 600 13px/18px var(--kh-font-body);
+	--kh-type-body: 400 16px/24px var(--kh-font-body);
+	--kh-type-body-medium: 400 14px/20px var(--kh-font-body);
+	--kh-type-pill: 700 13px/16px var(--kh-font-body);
+	--kh-type-caption: 700 12px/16px var(--kh-font-body);
+	--kh-type-button: 800 15px/20px var(--kh-font-heading);
+	--kh-tracking-screen-title: -0.015em;
+	--kh-tracking-caption: 0.05em;
+}
+
+:root,
+:root[data-theme='light'] {
+	color-scheme: light;
+	--kh-primary: #bf4a2a;
+	--kh-on-primary: #ffffff;
+	--kh-primary-container: #ffe6da;
+	--kh-on-primary-container: #7a2e18;
+	--kh-secondary: #6b5a50;
+	--kh-on-secondary: #ffffff;
+	--kh-secondary-container: #ffe6da;
+	--kh-on-secondary-container: #7a2e18;
+	--kh-tertiary: #2c6584;
+	--kh-on-tertiary: #ffffff;
+	--kh-background: #fff4ee;
+	--kh-on-background: #241b16;
+	--kh-on-surface: #241b16;
+	--kh-surface-variant: #f6e6dd;
+	--kh-on-surface-variant: #6b5a50;
+	--kh-outline: #8c7b71;
+	--kh-outline-variant: #eaddd5;
+	--kh-error: #b3261e;
+	--kh-on-error: #ffffff;
+	--kh-error-container: #f9dedc;
+	--kh-on-error-container: #8c1d18;
+	--kh-inverse-surface: #3a2e28;
+	--kh-inverse-on-surface: #fbeee7;
+	--kh-inverse-primary: #ffb59c;
+	--kh-scrim: #000000;
+	--kh-card: #ffffff;
+	--kh-row-tint: #fdf1ea;
+	--kh-toolbar: #241b16;
+	--kh-on-toolbar: #f3e6df;
+	--kh-surface-container-high: #ffffff;
+
+	--kh-depth-highlight: rgb(255 255 255 / 0.3);
+	--kh-depth-sheen: rgb(255 255 255 / 0.12);
+	--kh-depth-shadow: rgb(122 46 24 / 0.34);
+	--kh-depth-card-edge: rgb(122 46 24 / 0.07);
+	--kh-depth-card-shadow: rgb(122 46 24 / 0.18);
+
+	--ton-gron-container: #e3f0d6;
+	--ton-gron-content: #3f5a1c;
+	--ton-bla-container: #e2eff6;
+	--ton-bla-content: #1f4c66;
+	--accent-bla: #3b7ea1;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--kh-primary: #ffb59c;
+	--kh-on-primary: #5e1703;
+	--kh-primary-container: #6e2a15;
+	--kh-on-primary-container: #ffdbcd;
+	--kh-secondary: #cdbbb1;
+	--kh-on-secondary: #33271f;
+	--kh-secondary-container: #6e2a15;
+	--kh-on-secondary-container: #ffdbcd;
+	--kh-tertiary: #9bcbe8;
+	--kh-on-tertiary: #0e3448;
+	--kh-background: #1c1512;
+	--kh-on-background: #f3e6df;
+	--kh-on-surface: #f3e6df;
+	--kh-surface-variant: #33271f;
+	--kh-on-surface-variant: #cdbbb1;
+	--kh-outline: #9e8c82;
+	--kh-outline-variant: #4a3b33;
+	--kh-error: #f2b8b5;
+	--kh-on-error: #601410;
+	--kh-error-container: #601410;
+	--kh-on-error-container: #f9dedc;
+	--kh-inverse-surface: #f3e6df;
+	--kh-inverse-on-surface: #33271f;
+	--kh-inverse-primary: #bf4a2a;
+	--kh-scrim: #000000;
+	--kh-card: #2a201b;
+	--kh-row-tint: #33271f;
+	--kh-toolbar: #f3e6df;
+	--kh-on-toolbar: #33271f;
+	--kh-surface-container-high: #2a201b;
+
+	--kh-depth-highlight: rgb(255 255 255 / 0.4);
+	--kh-depth-sheen: rgb(255 255 255 / 0.14);
+	--kh-depth-shadow: rgb(0 0 0 / 0.55);
+	--kh-depth-card-edge: rgb(255 255 255 / 0.07);
+	--kh-depth-card-shadow: rgb(0 0 0 / 0.55);
+
+	--ton-gron-container: #34451f;
+	--ton-gron-content: #d2edb0;
+	--ton-bla-container: #1d3a4b;
+	--ton-bla-content: #c6e5f7;
+}
+
+/* The test theme's tones as an app writes them: on the element that has the tone. */
+.ton-gron {
+	--kh-tone-container: var(--ton-gron-container);
+	--kh-tone-content: var(--ton-gron-content);
+}
+.ton-bla {
+	--kh-tone-container: var(--ton-bla-container);
+	--kh-tone-content: var(--ton-bla-content);
+}

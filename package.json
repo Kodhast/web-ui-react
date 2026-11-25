@@ -1,0 +1,68 @@
+{
+	"name": "@kodhast/web-ui-react",
+	"version": "0.1.0",
+	"description": "React-komponenter ovanpå React Aria som sätter web-ui:s kh-klasser",
+	"license": "MIT",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Kodhast/web-ui-react.git"
+	},
+	"files": [
+		"dist/"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"sideEffects": false,
+	"engines": {
+		"node": ">=22.13"
+	},
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"check": "tsc -b",
+		"lint": "prettier --check . && eslint . --max-warnings 0",
+		"format": "prettier --write .",
+		"test": "vitest --run --coverage",
+		"dist:check": "node scripts/dist-check.mjs",
+		"verify": "npm run check && npm run lint && npm run test && npm run dist:check",
+		"gallery": "vite",
+		"skarmdumpar": "node scripts/skarmdumpar.mjs"
+	},
+	"peerDependencies": {
+		"@kodhast/web-ui": ">=2.0.0 <3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"dependencies": {
+		"react-aria-components": "^1.22.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@kodhast/web-ui": "github:Kodhast/web-ui#v2.0.0",
+		"@testing-library/jest-dom": "^8.0.0",
+		"@testing-library/react": "^16.3.3",
+		"@testing-library/user-event": "^14.6.13",
+		"@types/node": "^24.19.4",
+		"@types/react": "^19.3.3",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.3.0",
+		"@vitest/coverage-v8": "^5.1.2",
+		"eslint": "^10.15.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-react-hooks": "^7.1.1",
+		"globals": "^17.14.0",
+		"jsdom": "^31.0.1",
+		"playwright": "^1.65.1",
+		"prettier": "^3.10.1",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.74.0",
+		"vite": "^8.3.8",
+		"vitest": "^5.1.2"
+	}
+}
