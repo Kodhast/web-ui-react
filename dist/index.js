@@ -4,6 +4,7 @@ export { Card } from './Card.js';
 export { ConfirmDialog } from './ConfirmDialog.js';
 export { Dots } from './Dots.js';
 export { EmptyState } from './EmptyState.js';
+export { Header } from './Header.js';
 export { IconButton } from './IconButton.js';
 export { Notice } from './Notice.js';
 export { Pill, Pills } from './Pill.js';

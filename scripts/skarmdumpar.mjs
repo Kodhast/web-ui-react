@@ -49,7 +49,8 @@ try {
 				await page.mouse.move(0, 0);
 			}
 			// data-rull: a scrolled screen; two frames, so that the header has read the scroll.
-			if ((await frame.getAttribute('data-rull')) !== null) {
+			const scrolled = (await frame.getAttribute('data-rull')) !== null;
+			if (scrolled) {
 				await frame.evaluate(
 					() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))
 				);
@@ -68,7 +69,9 @@ try {
 			}
 			await (fullscreen ? page : frame).screenshot({
 				path: join(out, `${name}_${suffix}.png`),
-				animations: time ? 'allow' : 'disabled'
+				// A scrolled screen keeps its scroll-driven animations (the header's collapse); 'disabled' would
+				// spool them to their end or drop them.
+				animations: time || scrolled ? 'allow' : 'disabled'
 			});
 			if (fullscreen) {
 				await page.keyboard.press('Escape');
