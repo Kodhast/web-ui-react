@@ -4,6 +4,7 @@ export { Card, type CardProps } from './Card.js';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog.js';
 export { Dots } from './Dots.js';
 export { EmptyState, type EmptyStateProps } from './EmptyState.js';
+export { Header, type HeaderProps } from './Header.js';
 export { IconButton, type IconButtonProps } from './IconButton.js';
 export { Notice, type NoticeProps } from './Notice.js';
 export { Pill, Pills, type PillProps } from './Pill.js';

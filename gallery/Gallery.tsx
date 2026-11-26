@@ -7,6 +7,7 @@ import {
 	Dots,
 	EmptyState,
 	FilterChips,
+	Header,
 	IconButton,
 	Notice,
 	Pill,
@@ -240,6 +241,31 @@ function SheetDemo() {
 		</>
 	);
 }
+
+/** A top screen of a made-up time report under the header, as web-ui's AppHeader frames. */
+const HeaderScreen = ({ bouncing = false }: { bouncing?: boolean }) => (
+	<>
+		<Header
+			icon={<Box />}
+			name="Tidrapporten"
+			title="Idag"
+			subtitle="Torsdag 20 november"
+			dots
+			bouncing={bouncing}
+			trailing={
+				<button className="kh-avatar kh-avatar--online" type="button" aria-label="Konto">
+					<span className="kh-avatar__circle">AB</span>
+				</button>
+			}
+		/>
+		<div className="ark">
+			<Card>
+				<Prov title="Utveckling" subtitle="08:00–11:30 · 3,5 h" />
+			</Card>
+		</div>
+		<div className="fyll" />
+	</>
+);
 
 /** Idag, Veckan and Inställningar, as in the mockup. */
 const tabs = [
@@ -574,6 +600,15 @@ export function Gallery() {
 							<Add />
 						</IconButton>
 					</div>
+				</Part>
+				<Part title="Sidhuvud i vila" shot="AppHeader_vila" depth scroll={0}>
+					<HeaderScreen />
+				</Part>
+				<Part title="Sidhuvud ihopfällt" shot="AppHeader_ihopfalld" depth scroll={81}>
+					<HeaderScreen />
+				</Part>
+				<Part title="Sidhuvud som synkar" shot="AppHeader_synkar" depth scroll={0} time={225}>
+					<HeaderScreen bouncing />
 				</Part>
 				<Part title="Topprad" shot="AppTopBar_tillbakapil">
 					<TopBar title="Standard" onBack={() => {}} />
