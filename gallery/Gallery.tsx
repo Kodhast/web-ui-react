@@ -13,6 +13,7 @@ import {
 	PeriodPicker,
 	Pill,
 	Pills,
+	ReorderList,
 	Row,
 	SegmentedChoice,
 	Stepper,
@@ -267,6 +268,25 @@ const HeaderScreen = ({ bouncing = false }: { bouncing?: boolean }) => (
 		<div className="fyll" />
 	</>
 );
+
+/** The codes in a made-up customer's system, in their order (web-ui's Webb_dra_ordning). */
+function CodeOrder() {
+	const [codes, setCodes] = useState([
+		{ id: '1001', title: '1001 Utveckling', textValue: '1001 Utveckling' },
+		{ id: '1002', title: '1002 Möten', textValue: '1002 Möten' },
+		{ id: '1003', title: '1003 Förvaltning', textValue: '1003 Förvaltning' },
+		{ id: '1004', title: '1004 Intern tid', textValue: '1004 Intern tid' }
+	]);
+	return (
+		<Card>
+			<ReorderList
+				items={codes}
+				onReorder={(ids) => setCodes(ids.map((id) => codes.find((code) => code.id === id)!))}
+				aria-label="Kund A:s koder"
+			/>
+		</Card>
+	);
+}
 
 /** Idag, Veckan and Inställningar, as in the mockup. */
 const tabs = [
@@ -548,6 +568,12 @@ export function Gallery() {
 						previousLabel="Föregående vecka"
 						nextLabel="Nästa vecka"
 					/>
+				</Part>
+				<Part title="Dra för att ändra ordning (bara webben)" shot="Webb_dra_ordning">
+					<CodeOrder />
+				</Part>
+				<Part title="Dra för att ändra ordning med djup" shot="Webb_dra_ordning_djup" depth>
+					<CodeOrder />
 				</Part>
 				<Part title="Segmentval" shot="AppSegmentedChoice_tema">
 					<SegmentedChoice
