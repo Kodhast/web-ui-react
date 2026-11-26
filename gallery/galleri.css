@@ -94,3 +94,8 @@ main {
 .vanster kh-toolbar {
 	justify-content: flex-start;
 }
+
+/* A narrow period picker, where the label is cut short (as web-ui's gallery). */
+.smal {
+	max-inline-size: 280px;
+}
