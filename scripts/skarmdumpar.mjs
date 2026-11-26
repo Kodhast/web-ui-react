@@ -48,6 +48,13 @@ try {
 				await page.locator('dialog:modal').waitFor();
 				await page.mouse.move(0, 0);
 			}
+			// data-klick: a button in the frame that opens something (a menu) before the picture.
+			const click = await frame.getAttribute('data-klick');
+			if (click) {
+				await frame.locator(click).first().click();
+				await page.locator(':popover-open').waitFor();
+				await page.mouse.move(0, 0);
+			}
 			// data-rull: a scrolled screen; two frames, so that the header has read the scroll.
 			const scrolled = (await frame.getAttribute('data-rull')) !== null;
 			if (scrolled) {
@@ -73,6 +80,10 @@ try {
 				// spool them to their end or drop them.
 				animations: time || scrolled ? 'allow' : 'disabled'
 			});
+			if (click) {
+				await page.keyboard.press('Escape');
+				await page.locator(':popover-open').waitFor({ state: 'detached' });
+			}
 			if (fullscreen) {
 				await page.keyboard.press('Escape');
 				await page.locator('dialog:modal').waitFor({ state: 'detached' });

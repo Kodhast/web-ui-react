@@ -1,3 +1,5 @@
+export { AccountMenu, AccountRow } from './AccountMenu.js';
+export { Avatar, initials } from './Avatar.js';
 export { BottomSheet } from './BottomSheet.js';
 export { Button, buttonClass } from './Button.js';
 export { Card } from './Card.js';
@@ -6,6 +8,7 @@ export { Dots } from './Dots.js';
 export { EmptyState } from './EmptyState.js';
 export { Header } from './Header.js';
 export { IconButton } from './IconButton.js';
+export { Menu, MenuItem, MenuSeparator } from './Menu.js';
 export { Notice } from './Notice.js';
 export { PeriodPicker } from './PeriodPicker.js';
 export { Pill, Pills } from './Pill.js';

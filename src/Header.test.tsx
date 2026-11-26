@@ -55,4 +55,11 @@ describe('Header', () => {
 		expect(container.querySelector('kh-header')).not.toHaveAttribute('data-raised');
 		expectOnlyWebUi(container);
 	});
+
+	it('puts the version after the name', () => {
+		const { container } = render(<Header name="Tidrapporten" version="1.3.0" title="Idag" />);
+		const name = container.querySelector('.kh-header__name');
+		expect(name?.nextElementSibling).toHaveClass('kh-header__version');
+		expect(name?.nextElementSibling).toHaveTextContent('1.3.0');
+	});
 });

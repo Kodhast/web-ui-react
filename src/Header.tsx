@@ -9,6 +9,8 @@ export interface HeaderProps {
 	icon?: ReactElement<{ className?: string }>;
 	/** The app's name beside the icon. */
 	name?: ReactNode;
+	/** The app's version after the name (`kh-header__version`): small and dimmed, left out when it does not fit. */
+	version?: ReactNode;
 	/** Under the title, e.g. a greeting or a count. */
 	subtitle?: ReactNode;
 	/** At the end of the top row: the account's avatar, a status or a button. */
@@ -27,6 +29,7 @@ export function Header({
 	title,
 	icon,
 	name,
+	version,
 	subtitle,
 	trailing,
 	dots = false,
@@ -37,6 +40,7 @@ export function Header({
 		null,
 		icon && cloneElement(icon, { className: cx('kh-header__icon', icon.props.className) }),
 		name !== undefined && <span className="kh-header__name">{name}</span>,
+		version !== undefined && <span className="kh-header__version">{version}</span>,
 		trailing !== undefined && <div className="kh-header__trailing">{trailing}</div>,
 		<h1 className="kh-header__title">
 			{(dots || bouncing) && <Dots bouncing={bouncing} />}

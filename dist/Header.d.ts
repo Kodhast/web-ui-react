@@ -8,6 +8,8 @@ export interface HeaderProps {
     }>;
     /** The app's name beside the icon. */
     name?: ReactNode;
+    /** The app's version after the name (`kh-header__version`): small and dimmed, left out when it does not fit. */
+    version?: ReactNode;
     /** Under the title, e.g. a greeting or a count. */
     subtitle?: ReactNode;
     /** At the end of the top row: the account's avatar, a status or a button. */
@@ -21,4 +23,4 @@ export interface HeaderProps {
  * web-ui's `<kh-header>` (android-ui's AppHeader). Without kh.js the element is not defined, and web-ui's CSS
  * (2.1.0) collapses and raises it from the scroll of the nearest scroller; nothing here reads the scroll.
  */
-export declare function Header({ title, icon, name, subtitle, trailing, dots, bouncing }: HeaderProps): import("react").DOMElement<import("react").DOMAttributes<Element>, Element>;
+export declare function Header({ title, icon, name, version, subtitle, trailing, dots, bouncing }: HeaderProps): import("react").DOMElement<import("react").DOMAttributes<Element>, Element>;

@@ -99,3 +99,12 @@ main {
 .smal {
 	max-inline-size: 280px;
 }
+/* A frame tall enough for an open menu, as web-ui's .ram--hog. */
+.ram--hog {
+	block-size: 440px;
+}
+/* The account at the end of the row, as in a header. */
+.hoger {
+	display: flex;
+	justify-content: flex-end;
+}
