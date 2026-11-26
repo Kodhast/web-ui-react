@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
+	AccountMenu,
+	AccountRow,
+	Avatar,
 	BottomSheet,
 	Button,
 	Card,
@@ -98,6 +101,12 @@ const Play = () => (
 	</svg>
 );
 
+/** A made-up profile picture: a drawn face, no person's photo. */
+const photo = `data:image/svg+xml,${encodeURIComponent(
+	'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><rect width="72" height="72" fill="#7a9e7e"/><circle cx="36" cy="28" r="13" fill="#f3d6b8"/><path d="M12 72c2-16 12-24 24-24s22 8 24 24z" fill="#35577a"/></svg>'
+)}`;
+const anna = { name: 'Anna Berg', email: 'anna.berg@example.com' };
+
 /** A card's content without rows (web-ui's .prov). */
 const Prov = ({ title, subtitle }: { title: string; subtitle: string }) => (
 	<div className="prov">
@@ -114,6 +123,8 @@ function Part({
 	time,
 	fullscreen = false,
 	scroll,
+	click,
+	tall = false,
 	children
 }: {
 	title: string;
@@ -131,13 +142,22 @@ function Part({
 	 * header shows that state.
 	 */
 	scroll?: number;
+	/** The screenshot presses this button in the frame first, e.g. one that opens a menu (data-klick in web-ui). */
+	click?: string;
+	/** A frame tall enough for an open menu (web-ui's ram--hog). */
+	tall?: boolean;
 	children: ReactNode;
 }) {
 	const scroller = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (scroller.current && scroll !== undefined) scroller.current.scrollTop = scroll;
 	}, [scroll]);
-	const frameClass = ['ram', scroll !== undefined && 'ram--skarm', depth && 'kh-depth']
+	const frameClass = [
+		'ram',
+		scroll !== undefined && 'ram--skarm',
+		tall && 'ram--hog',
+		depth && 'kh-depth'
+	]
 		.filter(Boolean)
 		.join(' ');
 	return (
@@ -151,6 +171,7 @@ function Part({
 				data-tid={time}
 				data-helskarm={fullscreen ? '' : undefined}
 				data-rull={scroll}
+				data-klick={click}
 			>
 				{scroll === undefined ? (
 					children
@@ -246,7 +267,7 @@ function SheetDemo() {
 }
 
 /** A top screen of a made-up time report under the header, as web-ui's AppHeader frames. */
-const HeaderScreen = ({ bouncing = false }: { bouncing?: boolean }) => (
+const HeaderScreen = ({ bouncing = false, version }: { bouncing?: boolean; version?: string }) => (
 	<>
 		<Header
 			icon={<Box />}
@@ -255,6 +276,7 @@ const HeaderScreen = ({ bouncing = false }: { bouncing?: boolean }) => (
 			subtitle="Torsdag 20 november"
 			dots
 			bouncing={bouncing}
+			version={version}
 			trailing={
 				<button className="kh-avatar kh-avatar--online" type="button" aria-label="Konto">
 					<span className="kh-avatar__circle">AB</span>
@@ -668,6 +690,56 @@ export function Gallery() {
 							<Add />
 						</IconButton>
 					</div>
+				</Part>
+				<Part title="Avatar" shot="AccountAvatar_lagen">
+					<div className="rad">
+						<Avatar
+							name="Anna Berg"
+							online
+							onPress={() => {}}
+							aria-label="Konto och inställningar, ansluten"
+						/>
+						<Avatar name="Anna Berg" onPress={() => {}} aria-label="Konto och inställningar" />
+						<Avatar onPress={() => {}} aria-label="Konto och inställningar" />
+					</div>
+				</Part>
+				<Part title="Avatar med foto" shot="AccountAvatar_foto">
+					<div className="rad">
+						<Avatar name="Anna Berg" photoUrl={photo} online />
+						<Avatar name="Anna Berg" photoUrl={photo} />
+					</div>
+				</Part>
+				<Part title="Kontorad" shot="AccountRow_standard">
+					<Card>
+						<AccountRow {...anna} photoUrl={photo} />
+					</Card>
+				</Part>
+				<Part title="Kontomenyn öppen" shot="AccountMenu_inloggad" tall click=".kh-avatar">
+					<div className="hoger">
+						<AccountMenu
+							account={anna}
+							appName="Tidrapporten"
+							online
+							onOpenSettings={() => {}}
+							onOpenAbout={() => {}}
+							onSignOut={() => {}}
+						/>
+					</div>
+				</Part>
+				<Part title="Kontomenyn utloggad" shot="AccountMenuAvatar_utloggad" tall click=".kh-avatar">
+					<div className="hoger">
+						<AccountMenu
+							account={null}
+							appName="Tidrapporten"
+							onOpenSettings={() => {}}
+							onOpenAbout={() => {}}
+							onSignOut={() => {}}
+							onSignIn={() => {}}
+						/>
+					</div>
+				</Part>
+				<Part title="Sidhuvud i vila med version" shot="AppHeader_vila_version" depth scroll={0}>
+					<HeaderScreen version="1.3.0" />
 				</Part>
 				<Part title="Sidhuvud i vila" shot="AppHeader_vila" depth scroll={0}>
 					<HeaderScreen />
