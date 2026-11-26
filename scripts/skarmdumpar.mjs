@@ -48,11 +48,19 @@ try {
 				await page.locator('dialog:modal').waitFor();
 				await page.mouse.move(0, 0);
 			}
+			// data-rull: a scrolled screen; two frames, so that the header has read the scroll.
+			if ((await frame.getAttribute('data-rull')) !== null) {
+				await frame.evaluate(
+					() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))
+				);
+			}
 			// data-tid: bouncing dots stand still this many ms into the period (like the Roborazzi test's clock).
 			const time = await frame.getAttribute('data-tid');
 			if (time) {
 				await frame.evaluate((element, ms) => {
 					for (const animation of element.getAnimations({ subtree: true })) {
+						// Scroll-driven animations (the blur under the top bar) follow the scroll, not the clock.
+						if (!(animation.timeline instanceof DocumentTimeline)) continue;
 						animation.pause();
 						animation.currentTime = ms;
 					}
