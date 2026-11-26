@@ -7,6 +7,7 @@ export { EmptyState, type EmptyStateProps } from './EmptyState.js';
 export { Header, type HeaderProps } from './Header.js';
 export { IconButton, type IconButtonProps } from './IconButton.js';
 export { Notice, type NoticeProps } from './Notice.js';
+export { PeriodPicker, type PeriodPickerProps } from './PeriodPicker.js';
 export { Pill, Pills, type PillProps } from './Pill.js';
 export { Chevron, Row, type RowProps } from './Row.js';
 export type { PressableProps } from './Surface.js';

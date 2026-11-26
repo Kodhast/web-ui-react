@@ -10,6 +10,7 @@ import {
 	Header,
 	IconButton,
 	Notice,
+	PeriodPicker,
 	Pill,
 	Pills,
 	Row,
@@ -516,6 +517,37 @@ export function Gallery() {
 					<div>
 						<Stepper label="portioner" defaultValue={1} min={1} max={12} />
 					</div>
+				</Part>
+				<Part title="Periodväljare (bara webben)" shot="Webb_periodvaljare">
+					<PeriodPicker
+						label="Tisdag 24 november"
+						previousLabel="Föregående dag"
+						nextLabel="Nästa dag"
+					/>
+					<PeriodPicker
+						label="Vecka 47 · 16–22 nov"
+						previousLabel="Föregående vecka"
+						nextLabel="Nästa vecka"
+					/>
+					<div className="smal">
+						<PeriodPicker
+							label="Vecka 47 · måndag 16 – söndag 22 november"
+							previousLabel="Föregående vecka"
+							nextLabel="Nästa vecka"
+						/>
+					</div>
+				</Part>
+				<Part title="Periodväljare med djup" shot="Webb_periodvaljare_djup" depth>
+					<PeriodPicker
+						label="Tisdag 24 november"
+						previousLabel="Föregående dag"
+						nextLabel="Nästa dag"
+					/>
+					<PeriodPicker
+						label="Vecka 47 · 16–22 nov"
+						previousLabel="Föregående vecka"
+						nextLabel="Nästa vecka"
+					/>
 				</Part>
 				<Part title="Segmentval" shot="AppSegmentedChoice_tema">
 					<SegmentedChoice

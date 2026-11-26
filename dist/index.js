@@ -7,6 +7,7 @@ export { EmptyState } from './EmptyState.js';
 export { Header } from './Header.js';
 export { IconButton } from './IconButton.js';
 export { Notice } from './Notice.js';
+export { PeriodPicker } from './PeriodPicker.js';
 export { Pill, Pills } from './Pill.js';
 export { Chevron, Row } from './Row.js';
 export { FilterChips } from './FilterChips.js';
