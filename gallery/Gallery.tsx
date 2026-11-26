@@ -3,6 +3,7 @@ import {
 	BottomSheet,
 	Button,
 	Card,
+	Chip,
 	ConfirmDialog,
 	Dots,
 	EmptyState,
@@ -456,6 +457,15 @@ export function Gallery() {
 							{ value: 'kram', label: 'Kräm', isDisabled: true }
 						]}
 					/>
+				</Part>
+				<Part title="Chipknapp" shot="Chip_knapp">
+					<div className="kh-chips">
+						<Chip trailing={<Expand />} aria-label="Byt tidkod, nu Utveckling">
+							Utveckling
+						</Chip>
+						<Chip icon={<Add />}>Lägg till kod</Chip>
+						<Chip isDisabled>Förvaltning</Chip>
+					</div>
 				</Part>
 				<Part title="Valda med djup" shot="Valda_djup" depth>
 					<FilterChips

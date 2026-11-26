@@ -10,6 +10,7 @@ export { Notice, type NoticeProps } from './Notice.js';
 export { PeriodPicker, type PeriodPickerProps } from './PeriodPicker.js';
 export { Pill, Pills, type PillProps } from './Pill.js';
 export { ReorderList, reorder, type ReorderItem, type ReorderListProps } from './ReorderList.js';
+export { Chip, type ChipProps } from './Chip.js';
 export { Chevron, Row, type RowProps } from './Row.js';
 export type { PressableProps } from './Surface.js';
 export { FilterChips, type ChipOption, type FilterChipsProps } from './FilterChips.js';
