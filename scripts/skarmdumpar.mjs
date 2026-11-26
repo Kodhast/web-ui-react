@@ -39,6 +39,15 @@ try {
 		for (const frame of frames) {
 			const name = await frame.getAttribute('data-skarmdump');
 			await frame.scrollIntoViewIfNeeded();
+			// data-helskarm: a modal dialog or sheet covers the window, so the frame's first button opens it, the frame
+			// is placed at the top (its content behind the backdrop) and the window is taken.
+			const fullscreen = (await frame.getAttribute('data-helskarm')) !== null;
+			if (fullscreen) {
+				await frame.evaluate((element) => element.scrollIntoView({ block: 'start' }));
+				await frame.locator('button').first().click();
+				await page.locator('dialog:modal').waitFor();
+				await page.mouse.move(0, 0);
+			}
 			// data-tid: bouncing dots stand still this many ms into the period (like the Roborazzi test's clock).
 			const time = await frame.getAttribute('data-tid');
 			if (time) {
@@ -49,10 +58,14 @@ try {
 					}
 				}, Number(time));
 			}
-			await frame.screenshot({
+			await (fullscreen ? page : frame).screenshot({
 				path: join(out, `${name}_${suffix}.png`),
 				animations: time ? 'allow' : 'disabled'
 			});
+			if (fullscreen) {
+				await page.keyboard.press('Escape');
+				await page.locator('dialog:modal').waitFor({ state: 'detached' });
+			}
 		}
 		console.log(`${frames.length} skärmdumpar (${suffix}).`);
 		await page.close();
