@@ -1,6 +1,5 @@
 import type { ReactNode, Ref } from 'react';
 import {
-	Button as AriaButton,
 	Input,
 	Label,
 	Text,
@@ -8,6 +7,7 @@ import {
 	TextField as AriaTextField,
 	type TextFieldProps as AriaTextFieldProps
 } from 'react-aria-components';
+import { IconButton } from './IconButton.js';
 
 export interface TextFieldProps extends Omit<
 	AriaTextFieldProps,
@@ -54,9 +54,9 @@ export function TextField({
 				</Label>
 				{suffix !== undefined && <span className="kh-field__suffix">{suffix}</span>}
 				{action && (
-					<AriaButton className="kh-icon-btn" aria-label={action.label} onPress={action.onPress}>
+					<IconButton aria-label={action.label} onPress={action.onPress}>
 						{action.icon}
-					</AriaButton>
+					</IconButton>
 				)}
 			</label>
 			{hasError ? (

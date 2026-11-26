@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
 	BottomSheet,
 	Button,
@@ -7,6 +7,7 @@ import {
 	Dots,
 	EmptyState,
 	FilterChips,
+	IconButton,
 	Notice,
 	Pill,
 	Pills,
@@ -14,7 +15,9 @@ import {
 	SegmentedChoice,
 	Stepper,
 	SwitchRow,
-	TextField
+	TextField,
+	Toolbar,
+	TopBar
 } from '../src';
 
 /** Material Symbols' add, as in web-ui's gallery. */
@@ -45,9 +48,49 @@ const Download = () => (
 		<path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2z" />
 	</svg>
 );
-const Box = () => (
-	<svg viewBox="0 0 24 24" aria-hidden="true">
+const Box = ({ className }: { className?: string }) => (
+	<svg className={className} viewBox="0 0 24 24" aria-hidden="true">
 		<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88zM12 4.15 6.04 7.5 12 10.85l5.96-3.35zM5 15.91l6 3.38v-6.71L5 9.21zm14 0v-6.7l-6 3.37v6.71z" />
+	</svg>
+);
+
+const ArrowBack = () => (
+	<svg viewBox="0 0 24 24" aria-hidden="true">
+		<path
+			d="M19 12H5M12 19l-7-7 7-7"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+const Archive = () => (
+	<svg viewBox="0 0 24 24" aria-hidden="true">
+		<path
+			d="M4.5 4h15a1.5 1.5 0 0 1 1.5 1.5v2A1.5 1.5 0 0 1 19.5 9h-15A1.5 1.5 0 0 1 3 7.5v-2A1.5 1.5 0 0 1 4.5 4zM5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+const Calendar = () => (
+	<svg viewBox="0 0 24 24" aria-hidden="true">
+		<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z" />
+	</svg>
+);
+const Settings = () => (
+	<svg viewBox="0 0 24 24" aria-hidden="true">
+		<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+	</svg>
+);
+const Play = () => (
+	<svg viewBox="0 0 24 24" aria-hidden="true">
+		<path d="M8 5v14l11-7z" />
 	</svg>
 );
 
@@ -66,6 +109,7 @@ function Part({
 	depth = false,
 	time,
 	fullscreen = false,
+	scroll,
 	children
 }: {
 	title: string;
@@ -78,20 +122,39 @@ function Part({
 	 * whole window, since the backdrop covers it.
 	 */
 	fullscreen?: boolean;
+	/**
+	 * A screen with its own scrolling content (web-ui's ram--skarm and data-rull): scrolled this far, so that the
+	 * header shows that state.
+	 */
+	scroll?: number;
 	children: ReactNode;
 }) {
+	const scroller = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (scroller.current && scroll !== undefined) scroller.current.scrollTop = scroll;
+	}, [scroll]);
+	const frameClass = ['ram', scroll !== undefined && 'ram--skarm', depth && 'kh-depth']
+		.filter(Boolean)
+		.join(' ');
 	return (
 		<section className="galleri-del">
 			<h2 className="kh-text-caption">
 				{title} · {shot}
 			</h2>
 			<div
-				className={depth ? 'ram kh-depth' : 'ram'}
+				className={frameClass}
 				data-skarmdump={shot}
 				data-tid={time}
 				data-helskarm={fullscreen ? '' : undefined}
+				data-rull={scroll}
 			>
-				{children}
+				{scroll === undefined ? (
+					children
+				) : (
+					<div className="rullar" ref={scroller}>
+						{children}
+					</div>
+				)}
 			</div>
 		</section>
 	);
@@ -177,6 +240,13 @@ function SheetDemo() {
 		</>
 	);
 }
+
+/** Idag, Veckan and Inställningar, as in the mockup. */
+const tabs = [
+	{ id: 'idag', label: 'Idag', icon: <Clock />, href: '#idag' },
+	{ id: 'veckan', label: 'Veckan', icon: <Calendar />, href: '#veckan', badge: 2 },
+	{ id: 'installningar', label: 'Inställningar', icon: <Settings />, href: '#installningar' }
+];
 
 const toggleTheme = () => {
 	const root = document.documentElement;
@@ -375,6 +445,14 @@ export function Gallery() {
 						defaultSelected={['huvudvark']}
 						options={[{ value: 'huvudvark', label: 'Huvudvärk', count: 4, emphasized: true }]}
 					/>
+					<div className="rad tat">
+						<IconButton aria-label="Tillbaka" tonal>
+							<ArrowBack />
+						</IconButton>
+						<IconButton aria-label="Arkivera">
+							<Archive />
+						</IconButton>
+					</div>
 				</Part>
 				<Part title="Reglagerader" shot="SwitchRow_varianter">
 					<Card>
@@ -483,6 +561,55 @@ export function Gallery() {
 							text="Logga några dagar till så syns kurvan."
 						/>
 					</Card>
+				</Part>
+				<Part title="Ikonknappar" shot="AppIconButton_varianter">
+					<div className="rad ikonrad">
+						<IconButton aria-label="Tillbaka" tonal>
+							<ArrowBack />
+						</IconButton>
+						<IconButton aria-label="Arkivera">
+							<Archive />
+						</IconButton>
+						<IconButton aria-label="Lägg till" tonal isDisabled>
+							<Add />
+						</IconButton>
+					</div>
+				</Part>
+				<Part title="Topprad" shot="AppTopBar_tillbakapil">
+					<TopBar title="Standard" onBack={() => {}} />
+					<TopBar title="Lägg till frånvaro" onBack={() => {}} plainBack />
+					<TopBar title="Grön ton" onBack={() => {}} backTone="ton-gron" />
+					<TopBar title="Blå via appen" onBack={() => {}} plainBack backTone="ton-bla" />
+				</Part>
+				<Part title="Topprad som hämtar" shot="AppTopBar_prickar_hamtar" time={225}>
+					<TopBar title="Vecka 47" backHref="#veckan" bouncing />
+				</Part>
+				<Part title="Topprad med åtgärd" shot="Webb_topprad_atgard">
+					<TopBar
+						title="Måndag 17 nov"
+						onBack={() => {}}
+						dots
+						actions={
+							<Button variant="primary" compact>
+								Spara
+							</Button>
+						}
+					/>
+				</Part>
+				<Part title="Flikrad" shot="AppFloatingToolbar_flikar">
+					<div className="vanster">
+						<Toolbar tabs={tabs} selected="idag" aria-label="Flikar" />
+					</div>
+				</Part>
+				<Part title="Flikrad med huvudknapp" shot="AppFloatingToolbar_huvudknapp">
+					<div className="vanster">
+						<Toolbar
+							tabs={tabs}
+							selected="veckan"
+							aria-label="Flikar"
+							action={{ label: 'Starta timern', icon: <Play />, onPress: () => {} }}
+						/>
+					</div>
 				</Part>
 				<Part title="Ark med oskärpa" shot="AppBottomSheet_oskarpa" depth fullscreen>
 					<SheetDemo />

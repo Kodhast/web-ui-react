@@ -4,6 +4,7 @@ export { Card, type CardProps } from './Card.js';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog.js';
 export { Dots } from './Dots.js';
 export { EmptyState, type EmptyStateProps } from './EmptyState.js';
+export { IconButton, type IconButtonProps } from './IconButton.js';
 export { Notice, type NoticeProps } from './Notice.js';
 export { Pill, Pills, type PillProps } from './Pill.js';
 export { Chevron, Row, type RowProps } from './Row.js';
@@ -17,3 +18,5 @@ export {
 export { Stepper, type StepperProps } from './Stepper.js';
 export { Switch, SwitchRow, type SwitchProps, type SwitchRowProps } from './Switch.js';
 export { TextField, type TextFieldProps } from './TextField.js';
+export { Toolbar, type ToolbarAction, type ToolbarProps, type ToolbarTab } from './Toolbar.js';
+export { TopBar, type TopBarProps } from './TopBar.js';
