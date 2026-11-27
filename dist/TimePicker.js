@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { clampStep, formatTime, lapsFor, middleOf, minuteValues, nearestPosition, wheelIndexes, wrap } from './timeWheel.js';
+import { clampStep, DRAG_SLOP, FLING_WINDOW, flingNumbers, formatTime, lapsFor, middleOf, minuteValues, nearestPosition, wheelIndexes, wrap } from './timeWheel.js';
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 /**
  * web-ui's `<kh-time-picker>` (android-ui's TimePickerPopup wheels): hour and minute as two wheels that go round. The
@@ -19,6 +19,8 @@ function Wheel({ label, values, index, onSelect }) {
     const ref = useRef(null);
     const count = values.length;
     const latest = useRef({ index, onSelect });
+    // While the mouse drags the wheel, and it glides on, the snap is off (web-ui's --dragging).
+    const [dragging, setDragging] = useState(false);
     useLayoutEffect(() => {
         latest.current = { index, onSelect };
     });
@@ -56,8 +58,9 @@ function Wheel({ label, values, index, onSelect }) {
         // same number, or the old one if the app kept it). Unseen while the lap changes.
         const onScrollEnd = () => {
             const pitch = pitchOf(wheel);
-            if (!pitch)
+            if (!pitch || drag)
                 return;
+            setDragging(false);
             if (!byUser) {
                 standOnValue();
                 return;
@@ -69,9 +72,71 @@ function Wheel({ label, values, index, onSelect }) {
                 flushSync(() => latest.current.onSelect(next));
             standOnValue();
         };
+        // The mouse drags the wheel (a finger scrolls it by itself): as kh.js, it follows the mouse after DRAG_SLOP px,
+        // and glides on if it let go while moving. A press without moving picks the number under the mouse.
+        let drag = null;
+        const goTo = (at) => {
+            const pitch = pitchOf(wheel);
+            if (Math.abs(at * pitch - wheel.scrollTop) < 1)
+                onScrollEnd();
+            else
+                wheel.scrollTo({ top: at * pitch, behavior: 'smooth' });
+        };
+        const onPointerDown = (event) => {
+            if (event.pointerType !== 'mouse' || event.button !== 0)
+                return;
+            event.preventDefault();
+            wheel.focus();
+            drag = {
+                y: event.clientY,
+                top: wheel.scrollTop,
+                moved: false,
+                samples: [{ y: event.clientY, t: event.timeStamp }]
+            };
+            wheel.setPointerCapture?.(event.pointerId);
+        };
+        const onPointerMove = (event) => {
+            if (!drag)
+                return;
+            const dy = event.clientY - drag.y;
+            if (!drag.moved && Math.abs(dy) < DRAG_SLOP)
+                return;
+            if (!drag.moved) {
+                drag.moved = true;
+                setDragging(true);
+            }
+            wheel.scrollTop = drag.top - dy;
+            drag.samples.push({ y: event.clientY, t: event.timeStamp });
+            while (drag.samples.length > 2 && event.timeStamp - drag.samples[0].t > FLING_WINDOW)
+                drag.samples.shift();
+        };
+        const onPointerUp = (event) => {
+            if (!drag)
+                return;
+            const { moved, samples } = drag;
+            drag = null;
+            const pitch = pitchOf(wheel);
+            if (!pitch)
+                return;
+            if (!moved) {
+                // The pointer is captured, so the press does not reach the number: find it under the mouse.
+                const y = event.clientY -
+                    wheel.getBoundingClientRect().top +
+                    wheel.scrollTop -
+                    (wheel.clientHeight - pitch) / 2;
+                byUser = false;
+                latest.current.onSelect(wrap(Math.floor(y / pitch), count));
+                return;
+            }
+            goTo(Math.round(wheel.scrollTop / pitch + flingNumbers(samples, event.timeStamp, pitch)));
+        };
         const userEvents = ['wheel', 'touchstart', 'pointerdown'];
         for (const type of userEvents)
             wheel.addEventListener(type, onUser, { passive: true });
+        wheel.addEventListener('pointerdown', onPointerDown);
+        wheel.addEventListener('pointermove', onPointerMove);
+        wheel.addEventListener('pointerup', onPointerUp);
+        wheel.addEventListener('pointercancel', onPointerUp);
         wheel.addEventListener('scrollend', onScrollEnd);
         // A wheel that is not shown has no height: it stands on its number when it gets one.
         const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(standOnValue);
@@ -79,6 +144,10 @@ function Wheel({ label, values, index, onSelect }) {
         return () => {
             for (const type of userEvents)
                 wheel.removeEventListener(type, onUser);
+            wheel.removeEventListener('pointerdown', onPointerDown);
+            wheel.removeEventListener('pointermove', onPointerMove);
+            wheel.removeEventListener('pointerup', onPointerUp);
+            wheel.removeEventListener('pointercancel', onPointerUp);
             wheel.removeEventListener('scrollend', onScrollEnd);
             resize?.disconnect();
         };
@@ -93,6 +162,6 @@ function Wheel({ label, values, index, onSelect }) {
     };
     const value = values[index] ?? 0;
     const laps = lapsFor(count);
-    return (_jsx("div", { ref: ref, className: "kh-time-picker__wheel", role: "spinbutton", tabIndex: 0, "aria-label": label, "aria-valuemin": values[0], "aria-valuemax": values[count - 1], "aria-valuenow": value, "aria-valuetext": String(value).padStart(2, '0'), onKeyDown: onKeyDown, children: Array.from({ length: laps * count }, (_, position) => (_jsx("div", { className: "kh-time-picker__item", "aria-hidden": "true", onClick: () => onSelect(position % count), children: String(values[position % count]).padStart(2, '0') }, position))) }));
+    return (_jsx("div", { ref: ref, className: `kh-time-picker__wheel${dragging ? ' kh-time-picker__wheel--dragging' : ''}`, role: "spinbutton", tabIndex: 0, "aria-label": label, "aria-valuemin": values[0], "aria-valuemax": values[count - 1], "aria-valuenow": value, "aria-valuetext": String(value).padStart(2, '0'), onKeyDown: onKeyDown, children: Array.from({ length: laps * count }, (_, position) => (_jsx("div", { className: "kh-time-picker__item", "aria-hidden": "true", onClick: () => onSelect(position % count), children: String(values[position % count]).padStart(2, '0') }, position))) }));
 }
 const pitchOf = (wheel) => wheel?.firstElementChild?.offsetHeight ?? 0;

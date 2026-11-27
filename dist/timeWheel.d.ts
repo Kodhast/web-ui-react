@@ -30,3 +30,16 @@ export declare const middleOf: (index: number, count: number) => number;
 export declare function nearestPosition(from: number, index: number, count: number): number;
 /** The time the wheels show for `text`: its minute rounded to the nearest step. */
 export declare function snapTime(text: string, step: number): string;
+/** How far (px) the mouse moves before a press becomes a drag (as kh.js). */
+export declare const DRAG_SLOP = 4;
+/** A fling: the mouse moved faster than FLING_SPEED px/ms in the last FLING_WINDOW ms before it let go. */
+export declare const FLING_WINDOW = 100;
+export interface PointerSample {
+    y: number;
+    t: number;
+}
+/**
+ * The numbers a wheel glides on after the mouse let go at `releasedAt`, from the last samples of the drag: positive
+ * when the mouse moved up (later numbers), 0 when it was not moving.
+ */
+export declare function flingNumbers(samples: readonly PointerSample[], releasedAt: number, pitch: number): number;
