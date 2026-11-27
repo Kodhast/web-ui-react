@@ -22,6 +22,8 @@ export interface TimeFieldProps {
 	isDisabled?: boolean;
 	/** The dialog's title (standard the label). */
 	pickerTitle?: ReactNode;
+	/** Where the wheels start while `value` is empty (standard "08:00"). */
+	pickerStart?: string;
 	/** The icon button's name and what the field offers (standard "Välj tid"). */
 	pickLabel?: string;
 }
@@ -47,6 +49,7 @@ export function TimeField({
 	errorMessage,
 	isDisabled = false,
 	pickerTitle,
+	pickerStart = '08:00',
 	pickLabel = 'Välj tid'
 }: TimeFieldProps) {
 	const [isOpen, setOpen] = useState(false);
@@ -110,7 +113,7 @@ export function TimeField({
 					<PickerContent
 						title={pickerTitle ?? label}
 						titleProps={titleProps}
-						value={value}
+						value={value.trim() === '' ? pickerStart : value}
 						step={step}
 						onCancel={() => setOpen(false)}
 						onPick={(time) => {

@@ -15,6 +15,8 @@ export interface TimeFieldProps {
     isDisabled?: boolean;
     /** The dialog's title (standard the label). */
     pickerTitle?: ReactNode;
+    /** Where the wheels start while `value` is empty (standard "08:00"). */
+    pickerStart?: string;
     /** The icon button's name and what the field offers (standard "Välj tid"). */
     pickLabel?: string;
 }
@@ -23,4 +25,4 @@ export interface TimeFieldProps {
  * `kh-dialog` with Avbryt and OK. The field cannot be typed in, so no keyboard comes up on the phone: a press anywhere
  * on it, the clock or Enter, Space or arrow down opens the dialog.
  */
-export declare function TimeField({ label, value, onChange, step, description, errorMessage, isDisabled, pickerTitle, pickLabel }: TimeFieldProps): import("react").JSX.Element;
+export declare function TimeField({ label, value, onChange, step, description, errorMessage, isDisabled, pickerTitle, pickerStart, pickLabel }: TimeFieldProps): import("react").JSX.Element;

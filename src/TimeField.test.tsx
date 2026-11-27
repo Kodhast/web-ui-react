@@ -85,6 +85,17 @@ describe('TimeField', () => {
 		expect(onChange).toHaveBeenCalledWith('09:35');
 	});
 
+	it('starts the wheels on pickerStart while the field is empty', async () => {
+		const user = userEvent.setup();
+		render(<Form start="" pickerStart="16:00" />);
+		expect(field()).toHaveValue('');
+		await user.click(field());
+		expect(screen.getByRole('spinbutton', { name: 'Timme' })).toHaveAttribute(
+			'aria-valuetext',
+			'16'
+		);
+	});
+
 	it('shows the error instead of the help text', () => {
 		render(<Form description="Hjälp" errorMessage="Slutet ligger före starten" />);
 		expect(field()).toHaveAttribute('aria-invalid', 'true');

@@ -13,7 +13,7 @@ const Clock = () => (_jsx("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", 
  * `kh-dialog` with Avbryt and OK. The field cannot be typed in, so no keyboard comes up on the phone: a press anywhere
  * on it, the clock or Enter, Space or arrow down opens the dialog.
  */
-export function TimeField({ label, value, onChange, step = 1, description, errorMessage, isDisabled = false, pickerTitle, pickLabel = 'Välj tid' }) {
+export function TimeField({ label, value, onChange, step = 1, description, errorMessage, isDisabled = false, pickerTitle, pickerStart = '08:00', pickLabel = 'Välj tid' }) {
     const [isOpen, setOpen] = useState(false);
     const hasError = errorMessage !== undefined && errorMessage !== null && errorMessage !== false;
     const open = () => {
@@ -26,7 +26,7 @@ export function TimeField({ label, value, onChange, step = 1, description, error
         event.preventDefault();
         open();
     };
-    return (_jsxs(_Fragment, { children: [_jsxs(AriaTextField, { value: value, isReadOnly: true, isDisabled: isDisabled, isInvalid: hasError, className: "kh-field-group", children: [_jsxs("label", { className: "kh-field", children: [_jsx(Input, { className: "kh-field__input", placeholder: " ", "aria-haspopup": "dialog", onClick: open, onKeyDown: onKeyDown }), _jsx(Label, { elementType: "span", className: "kh-field__label", children: label }), _jsx(IconButton, { "aria-label": pickLabel, onPress: open, isDisabled: isDisabled, children: _jsx(Clock, {}) })] }), hasError ? (_jsx(Text, { slot: "errorMessage", elementType: "p", className: "kh-field__support kh-field__support--error", children: errorMessage })) : (description !== undefined && (_jsx(Text, { slot: "description", elementType: "p", className: "kh-field__support", children: description })))] }), _jsx(Modal, { className: "kh-dialog", role: "dialog", isDismissable: true, isOpen: isOpen, onOpenChange: setOpen, children: ({ titleProps }) => (_jsx(PickerContent, { title: pickerTitle ?? label, titleProps: titleProps, value: value, step: step, onCancel: () => setOpen(false), onPick: (time) => {
+    return (_jsxs(_Fragment, { children: [_jsxs(AriaTextField, { value: value, isReadOnly: true, isDisabled: isDisabled, isInvalid: hasError, className: "kh-field-group", children: [_jsxs("label", { className: "kh-field", children: [_jsx(Input, { className: "kh-field__input", placeholder: " ", "aria-haspopup": "dialog", onClick: open, onKeyDown: onKeyDown }), _jsx(Label, { elementType: "span", className: "kh-field__label", children: label }), _jsx(IconButton, { "aria-label": pickLabel, onPress: open, isDisabled: isDisabled, children: _jsx(Clock, {}) })] }), hasError ? (_jsx(Text, { slot: "errorMessage", elementType: "p", className: "kh-field__support kh-field__support--error", children: errorMessage })) : (description !== undefined && (_jsx(Text, { slot: "description", elementType: "p", className: "kh-field__support", children: description })))] }), _jsx(Modal, { className: "kh-dialog", role: "dialog", isDismissable: true, isOpen: isOpen, onOpenChange: setOpen, children: ({ titleProps }) => (_jsx(PickerContent, { title: pickerTitle ?? label, titleProps: titleProps, value: value.trim() === '' ? pickerStart : value, step: step, onCancel: () => setOpen(false), onPick: (time) => {
                         onChange(time);
                         setOpen(false);
                     } })) })] }));
