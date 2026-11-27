@@ -101,21 +101,35 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 			if (pitch)
 				wheel.scrollTo({ top: middleOf(latest.current.index, count) * pitch, behavior: 'instant' });
 		};
+		// Only a scroll the user started is a choice. The wheel's own scroll to the app's value is not: quick arrow
+		// presses cut each other's scroll short, and where it stopped would be reported.
+		let byUser = false;
+		const onUser = () => {
+			byUser = true;
+		};
 		// The wheel stopped: report the number in the middle, then stand on the app's value in the middle lap (the
 		// same number, or the old one if the app kept it). Unseen while the lap changes.
 		const onScrollEnd = () => {
 			const pitch = pitchOf(wheel);
 			if (!pitch) return;
+			if (!byUser) {
+				standOnValue();
+				return;
+			}
+			byUser = false;
 			const next = wrap(Math.round(wheel.scrollTop / pitch), count);
 			// flushSync: the app's answer is committed before the wheel is placed, also when it keeps the old time.
 			if (next !== latest.current.index) flushSync(() => latest.current.onSelect(next));
 			standOnValue();
 		};
+		const userEvents = ['wheel', 'touchstart', 'pointerdown'] as const;
+		for (const type of userEvents) wheel.addEventListener(type, onUser, { passive: true });
 		wheel.addEventListener('scrollend', onScrollEnd);
 		// A wheel that is not shown has no height: it stands on its number when it gets one.
 		const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(standOnValue);
 		resize?.observe(wheel);
 		return () => {
+			for (const type of userEvents) wheel.removeEventListener(type, onUser);
 			wheel.removeEventListener('scrollend', onScrollEnd);
 			resize?.disconnect();
 		};
