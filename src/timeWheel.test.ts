@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	clampStep,
+	flingNumbers,
 	lapsFor,
 	middleOf,
 	minuteValues,
@@ -48,6 +49,46 @@ describe('timeWheel', () => {
 		expect(lapsFor(24) % 2).toBe(1);
 		expect(lapsFor(24) * 24).toBeGreaterThanOrEqual(200);
 		expect(middleOf(0, 24)).toBe(Math.floor(lapsFor(24) / 2) * 24);
+	});
+
+	it('glides on after a fling, at most 30 numbers, and not after a pause or a slow drag', () => {
+		const up = [
+			{ y: 200, t: 0 },
+			{ y: 120, t: 40 }
+		];
+		expect(flingNumbers(up, 45, 40)).toBe(16); // 2 px/ms × 320 ms = 640 px = 16 numbers, later ones
+		expect(
+			flingNumbers(
+				[
+					{ y: 0, t: 0 },
+					{ y: 80, t: 40 }
+				],
+				45,
+				40
+			)
+		).toBe(-16);
+		expect(
+			flingNumbers(
+				[
+					{ y: 0, t: 0 },
+					{ y: -4000, t: 10 }
+				],
+				15,
+				40
+			)
+		).toBe(30);
+		expect(flingNumbers(up, 200, 40)).toBe(0); // let go after a pause
+		expect(
+			flingNumbers(
+				[
+					{ y: 0, t: 0 },
+					{ y: 10, t: 40 }
+				],
+				45,
+				40
+			)
+		).toBe(0); // 0.25 px/ms
+		expect(flingNumbers([], 0, 40)).toBe(0);
 	});
 
 	it('finds the nearest position the short way round', () => {

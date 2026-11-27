@@ -1,6 +1,6 @@
 {
 	"name": "@kodhast/web-ui-react",
-	"version": "0.12.1",
+	"version": "0.13.0",
 	"description": "React-komponenter ovanpå React Aria som sätter web-ui:s kh-klasser",
 	"license": "MIT",
 	"type": "module",
@@ -33,7 +33,7 @@
 		"skarmdumpar": "node scripts/skarmdumpar.mjs"
 	},
 	"peerDependencies": {
-		"@kodhast/web-ui": ">=2.3.0 <4",
+		"@kodhast/web-ui": ">=3.3.0 <4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
@@ -44,7 +44,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
-		"@kodhast/web-ui": "github:Kodhast/web-ui#v3.2.0",
+		"@kodhast/web-ui": "github:Kodhast/web-ui#v3.3.0",
 		"@testing-library/jest-dom": "^8.0.0",
 		"@testing-library/react": "^16.3.3",
 		"@testing-library/user-event": "^14.6.13",

@@ -1,7 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, type KeyboardEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import {
 	clampStep,
+	DRAG_SLOP,
+	FLING_WINDOW,
+	flingNumbers,
 	formatTime,
 	lapsFor,
 	middleOf,
@@ -75,6 +78,8 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 	const ref = useRef<HTMLDivElement>(null);
 	const count = values.length;
 	const latest = useRef({ index, onSelect });
+	// While the mouse drags the wheel, and it glides on, the snap is off (web-ui's --dragging).
+	const [dragging, setDragging] = useState(false);
 	useLayoutEffect(() => {
 		latest.current = { index, onSelect };
 	});
@@ -111,7 +116,8 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 		// same number, or the old one if the app kept it). Unseen while the lap changes.
 		const onScrollEnd = () => {
 			const pitch = pitchOf(wheel);
-			if (!pitch) return;
+			if (!pitch || drag) return;
+			setDragging(false);
 			if (!byUser) {
 				standOnValue();
 				return;
@@ -122,14 +128,79 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 			if (next !== latest.current.index) flushSync(() => latest.current.onSelect(next));
 			standOnValue();
 		};
+		// The mouse drags the wheel (a finger scrolls it by itself): as kh.js, it follows the mouse after DRAG_SLOP px,
+		// and glides on if it let go while moving. A press without moving picks the number under the mouse.
+		let drag: {
+			y: number;
+			top: number;
+			moved: boolean;
+			samples: { y: number; t: number }[];
+		} | null = null;
+		const goTo = (at: number) => {
+			const pitch = pitchOf(wheel);
+			if (Math.abs(at * pitch - wheel.scrollTop) < 1) onScrollEnd();
+			else wheel.scrollTo({ top: at * pitch, behavior: 'smooth' });
+		};
+		const onPointerDown = (event: PointerEvent) => {
+			if (event.pointerType !== 'mouse' || event.button !== 0) return;
+			event.preventDefault();
+			wheel.focus();
+			drag = {
+				y: event.clientY,
+				top: wheel.scrollTop,
+				moved: false,
+				samples: [{ y: event.clientY, t: event.timeStamp }]
+			};
+			wheel.setPointerCapture?.(event.pointerId);
+		};
+		const onPointerMove = (event: PointerEvent) => {
+			if (!drag) return;
+			const dy = event.clientY - drag.y;
+			if (!drag.moved && Math.abs(dy) < DRAG_SLOP) return;
+			if (!drag.moved) {
+				drag.moved = true;
+				setDragging(true);
+			}
+			wheel.scrollTop = drag.top - dy;
+			drag.samples.push({ y: event.clientY, t: event.timeStamp });
+			while (drag.samples.length > 2 && event.timeStamp - drag.samples[0]!.t > FLING_WINDOW)
+				drag.samples.shift();
+		};
+		const onPointerUp = (event: PointerEvent) => {
+			if (!drag) return;
+			const { moved, samples } = drag;
+			drag = null;
+			const pitch = pitchOf(wheel);
+			if (!pitch) return;
+			if (!moved) {
+				// The pointer is captured, so the press does not reach the number: find it under the mouse.
+				const y =
+					event.clientY -
+					wheel.getBoundingClientRect().top +
+					wheel.scrollTop -
+					(wheel.clientHeight - pitch) / 2;
+				byUser = false;
+				latest.current.onSelect(wrap(Math.floor(y / pitch), count));
+				return;
+			}
+			goTo(Math.round(wheel.scrollTop / pitch + flingNumbers(samples, event.timeStamp, pitch)));
+		};
 		const userEvents = ['wheel', 'touchstart', 'pointerdown'] as const;
 		for (const type of userEvents) wheel.addEventListener(type, onUser, { passive: true });
+		wheel.addEventListener('pointerdown', onPointerDown);
+		wheel.addEventListener('pointermove', onPointerMove);
+		wheel.addEventListener('pointerup', onPointerUp);
+		wheel.addEventListener('pointercancel', onPointerUp);
 		wheel.addEventListener('scrollend', onScrollEnd);
 		// A wheel that is not shown has no height: it stands on its number when it gets one.
 		const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(standOnValue);
 		resize?.observe(wheel);
 		return () => {
 			for (const type of userEvents) wheel.removeEventListener(type, onUser);
+			wheel.removeEventListener('pointerdown', onPointerDown);
+			wheel.removeEventListener('pointermove', onPointerMove);
+			wheel.removeEventListener('pointerup', onPointerUp);
+			wheel.removeEventListener('pointercancel', onPointerUp);
 			wheel.removeEventListener('scrollend', onScrollEnd);
 			resize?.disconnect();
 		};
@@ -148,7 +219,7 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 	return (
 		<div
 			ref={ref}
-			className="kh-time-picker__wheel"
+			className={`kh-time-picker__wheel${dragging ? ' kh-time-picker__wheel--dragging' : ''}`}
 			role="spinbutton"
 			tabIndex={0}
 			aria-label={label}
@@ -159,7 +230,7 @@ function Wheel({ label, values, index, onSelect }: WheelProps) {
 			onKeyDown={onKeyDown}
 		>
 			{Array.from({ length: laps * count }, (_, position) => (
-				// A press on a number above or below brings it to the middle.
+				// A press on a number above or below brings it to the middle (a mouse press: onPointerUp).
 				<div
 					key={position}
 					className="kh-time-picker__item"

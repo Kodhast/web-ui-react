@@ -116,5 +116,67 @@ describe('TimePicker', () => {
 			expect(onChange).not.toHaveBeenCalled();
 			expect((hour().scrollTop / PITCH) % 24).toBe(7);
 		});
+
+		// A mouse event at `y` and time `t` ms (jsdom's own clock would make every drag a fling).
+		const mouse = (wheel: HTMLElement, type: string, y: number, t: number) => {
+			const event = new MouseEvent(type, {
+				bubbles: true,
+				cancelable: true,
+				button: 0,
+				clientY: y
+			});
+			Object.defineProperties(event, {
+				pointerType: { value: 'mouse' },
+				pointerId: { value: 1 },
+				timeStamp: { value: t }
+			});
+			fireEvent(wheel, event);
+		};
+
+		it('follows a mouse drag with the snap off, and reports where it stopped', () => {
+			withLayout();
+			const onChange = vi.fn();
+			render(<TimePicker value="07:30" onChange={onChange} />);
+			const start = minute().scrollTop;
+			mouse(minute(), 'pointerdown', 200, 0);
+			mouse(minute(), 'pointermove', 202, 10);
+			expect(minute()).not.toHaveClass('kh-time-picker__wheel--dragging');
+			mouse(minute(), 'pointermove', 200 - 3 * PITCH, 400);
+			expect(minute()).toHaveClass('kh-time-picker__wheel--dragging');
+			expect(minute().scrollTop).toBe(start + 3 * PITCH);
+			// Let go after a pause: no fling, the wheel stays on the number.
+			mouse(minute(), 'pointerup', 200 - 3 * PITCH, 800);
+			expect(minute()).not.toHaveClass('kh-time-picker__wheel--dragging');
+			expect(onChange).toHaveBeenCalledWith('07:33');
+			expectOnlyWebUi(minute().parentElement!.parentElement!);
+		});
+
+		it('glides on after a fling, and keeps the snap off until it stops', () => {
+			withLayout();
+			const onChange = vi.fn();
+			render(<TimePicker value="07:30" onChange={onChange} />);
+			const start = minute().scrollTop;
+			mouse(minute(), 'pointerdown', 200, 0);
+			mouse(minute(), 'pointermove', 200 - PITCH, 20);
+			mouse(minute(), 'pointermove', 200 - 2 * PITCH, 40);
+			mouse(minute(), 'pointerup', 200 - 2 * PITCH, 45);
+			// 2 numbers in 40 ms: 2 px/ms × 320 ms = 16 numbers more.
+			expect(minute().scrollTop).toBe(start + 18 * PITCH);
+			expect(minute()).toHaveClass('kh-time-picker__wheel--dragging');
+			fireEvent(minute(), new Event('scrollend'));
+			expect(minute()).not.toHaveClass('kh-time-picker__wheel--dragging');
+			expect(onChange).toHaveBeenCalledWith('07:48');
+		});
+
+		it('takes a mouse press without a drag as a press on the number under it', () => {
+			withLayout();
+			const onChange = vi.fn();
+			render(<TimePicker value="07:30" onChange={onChange} />);
+			// The wheel shows three numbers with its top at 0: the one below the middle (08) is at 2.5 pitches.
+			vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(3 * PITCH);
+			mouse(hour(), 'pointerdown', PITCH * 2.5, 0);
+			mouse(hour(), 'pointerup', PITCH * 2.5 + 1, 80);
+			expect(onChange).toHaveBeenCalledWith('08:30');
+		});
 	});
 });

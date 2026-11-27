@@ -44,3 +44,25 @@ export function snapTime(text, step) {
     const at = wheelIndexes(text, step);
     return formatTime(at.hour, minuteValues(step)[at.minute] ?? 0);
 }
+/** How far (px) the mouse moves before a press becomes a drag (as kh.js). */
+export const DRAG_SLOP = 4;
+/** A fling: the mouse moved faster than FLING_SPEED px/ms in the last FLING_WINDOW ms before it let go. */
+export const FLING_WINDOW = 100;
+const FLING_SPEED = 0.4;
+/** How far a fling glides: the speed times FLING_GLIDE ms, at most FLING_MAX numbers. */
+const FLING_GLIDE = 320;
+const FLING_MAX = 30;
+/**
+ * The numbers a wheel glides on after the mouse let go at `releasedAt`, from the last samples of the drag: positive
+ * when the mouse moved up (later numbers), 0 when it was not moving.
+ */
+export function flingNumbers(samples, releasedAt, pitch) {
+    const first = samples[0];
+    const last = samples[samples.length - 1];
+    if (!first || !last || !pitch || releasedAt - last.t >= FLING_WINDOW)
+        return 0;
+    const speed = (last.y - first.y) / Math.max(1, last.t - first.t);
+    if (Math.abs(speed) <= FLING_SPEED)
+        return 0;
+    return Math.max(-FLING_MAX, Math.min(FLING_MAX, (-speed * FLING_GLIDE) / pitch));
+}
