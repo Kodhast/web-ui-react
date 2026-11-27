@@ -74,11 +74,13 @@ try {
 					}
 				}, Number(time));
 			}
+			// data-animera: scroll-driven animations (the time wheels' numbers) show their state.
+			const animate = (await frame.getAttribute('data-animera')) !== null;
 			await (fullscreen ? page : frame).screenshot({
 				path: join(out, `${name}_${suffix}.png`),
 				// A scrolled screen keeps its scroll-driven animations (the header's collapse); 'disabled' would
 				// spool them to their end or drop them.
-				animations: time || scrolled ? 'allow' : 'disabled'
+				animations: time || scrolled || animate ? 'allow' : 'disabled'
 			});
 			if (click) {
 				await page.keyboard.press('Escape');

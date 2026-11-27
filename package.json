@@ -1,6 +1,6 @@
 {
 	"name": "@kodhast/web-ui-react",
-	"version": "0.11.0",
+	"version": "0.12.0",
 	"description": "React-komponenter ovanpå React Aria som sätter web-ui:s kh-klasser",
 	"license": "MIT",
 	"type": "module",

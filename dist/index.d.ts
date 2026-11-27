@@ -21,5 +21,7 @@ export { SegmentedChoice, type SegmentedChoiceProps, type SegmentedOption } from
 export { Stepper, type StepperProps } from './Stepper.js';
 export { Switch, SwitchRow, type SwitchProps, type SwitchRowProps } from './Switch.js';
 export { TextField, type TextFieldProps } from './TextField.js';
+export { TimeField, type TimeFieldProps } from './TimeField.js';
+export { TimePicker, type TimePickerProps } from './TimePicker.js';
 export { Toolbar, type ToolbarAction, type ToolbarProps, type ToolbarTab } from './Toolbar.js';
 export { TopBar, type TopBarProps } from './TopBar.js';

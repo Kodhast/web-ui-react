@@ -20,5 +20,7 @@ export { SegmentedChoice } from './SegmentedChoice.js';
 export { Stepper } from './Stepper.js';
 export { Switch, SwitchRow } from './Switch.js';
 export { TextField } from './TextField.js';
+export { TimeField } from './TimeField.js';
+export { TimePicker } from './TimePicker.js';
 export { Toolbar } from './Toolbar.js';
 export { TopBar } from './TopBar.js';

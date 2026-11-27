@@ -23,6 +23,7 @@ import {
 	Stepper,
 	SwitchRow,
 	TextField,
+	TimeField,
 	Toolbar,
 	TopBar
 } from '../src';
@@ -125,6 +126,7 @@ function Part({
 	scroll,
 	click,
 	tall = false,
+	animate = false,
 	children
 }: {
 	title: string;
@@ -146,6 +148,8 @@ function Part({
 	click?: string;
 	/** A frame tall enough for an open menu (web-ui's ram--hog). */
 	tall?: boolean;
+	/** Scroll-driven animations (the time wheels' numbers) show their state in the screenshot (data-animera in web-ui). */
+	animate?: boolean;
 	children: ReactNode;
 }) {
 	const scroller = useRef<HTMLDivElement>(null);
@@ -172,6 +176,7 @@ function Part({
 				data-helskarm={fullscreen ? '' : undefined}
 				data-rull={scroll}
 				data-klick={click}
+				data-animera={animate ? '' : undefined}
 			>
 				{scroll === undefined ? (
 					children
@@ -231,6 +236,21 @@ function DialogDemo() {
 			</ConfirmDialog>
 		</>
 	);
+}
+
+/** A time field that keeps its own time, as an app does. */
+function TimeDemo({
+	label,
+	start,
+	...props
+}: {
+	label: string;
+	start: string;
+	description?: string;
+	pickerTitle?: string;
+}) {
+	const [value, setValue] = useState(start);
+	return <TimeField label={label} value={value} onChange={setValue} {...props} />;
 }
 
 function SheetDemo() {
@@ -785,6 +805,16 @@ export function Gallery() {
 							action={{ label: 'Starta timern', icon: <Play />, onPress: () => {} }}
 						/>
 					</div>
+				</Part>
+				<Part title="Tidsfält" shot="TimeField_tid">
+					<TimeDemo label="Påminnelse" start="07:00" />
+					<TimeDemo label="Kvällsdos" start="21:30" description="Samma tid varje dag" />
+				</Part>
+				<Part title="Tidsväljare" shot="TimePickerPopup_oppen" fullscreen animate>
+					<TimeDemo label="Start" start="07:30" pickerTitle="Välj tid" />
+				</Part>
+				<Part title="Tidsväljare med djup" shot="TimePickerPopup_djup" depth fullscreen animate>
+					<TimeDemo label="Start" start="08:00" pickerTitle="Välj tid" />
 				</Part>
 				<Part title="Ark med oskärpa" shot="AppBottomSheet_oskarpa" depth fullscreen>
 					<SheetDemo />
