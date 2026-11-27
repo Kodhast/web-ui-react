@@ -11,6 +11,8 @@ export interface ReorderListProps {
     items: ReorderItem[];
     /** The ids in their new order, after a drop. */
     onReorder: (ids: string[]) => void;
+    /** A press on a row (not on its handle), e.g. to open the row for editing; left out, rows only move. */
+    onAction?: (id: string) => void;
     /** The handle's name; "Flytta <textValue>" by default. */
     handleLabel?: (item: ReorderItem) => string;
     /** The list's name. */
@@ -26,4 +28,4 @@ export declare function reorder(ids: readonly string[], moved: Iterable<Key>, ta
  * dragging (or with the keyboard from the handle). React Aria's GridList owns the dragging and sets
  * `data-dragging` and `data-drop-target`, which web-ui's CSS reads. The app owns the order.
  */
-export declare function ReorderList({ items, onReorder, handleLabel, 'aria-label': ariaLabel }: ReorderListProps): import("react").JSX.Element;
+export declare function ReorderList({ items, onReorder, onAction, handleLabel, 'aria-label': ariaLabel }: ReorderListProps): import("react").JSX.Element;

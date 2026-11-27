@@ -23,6 +23,8 @@ export interface ReorderListProps {
 	items: ReorderItem[];
 	/** The ids in their new order, after a drop. */
 	onReorder: (ids: string[]) => void;
+	/** A press on a row (not on its handle), e.g. to open the row for editing; left out, rows only move. */
+	onAction?: (id: string) => void;
 	/** The handle's name; "Flytta <textValue>" by default. */
 	handleLabel?: (item: ReorderItem) => string;
 	/** The list's name. */
@@ -55,6 +57,7 @@ export function reorder(
 export function ReorderList({
 	items,
 	onReorder,
+	onAction,
 	handleLabel = (item) => `Flytta ${item.textValue}`,
 	'aria-label': ariaLabel
 }: ReorderListProps) {
@@ -94,6 +97,7 @@ export function ReorderList({
 			aria-label={ariaLabel}
 			items={items}
 			dragAndDropHooks={dragAndDropHooks}
+			onAction={onAction && ((key) => onAction(String(key)))}
 		>
 			{(item) => (
 				<GridListItem id={item.id} textValue={item.textValue} className="kh-row">

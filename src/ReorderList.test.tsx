@@ -58,6 +58,16 @@ describe('ReorderList', () => {
 		expectOnlyWebUi(container);
 	});
 
+	it('reports a press on a row by its id', async () => {
+		const user = userEvent.setup();
+		const onAction = vi.fn();
+		render(
+			<ReorderList items={items} onReorder={vi.fn()} onAction={onAction} aria-label="Koder" />
+		);
+		await user.click(screen.getByText('1002 Möten'));
+		expect(onAction).toHaveBeenCalledExactlyOnceWith('1002');
+	});
+
 	it('names the handle as the app says', () => {
 		render(
 			<ReorderList
