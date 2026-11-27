@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TimePicker } from './TimePicker';
 import { expectOnlyWebUi } from './noStyle.test-helper';
 
@@ -77,5 +77,44 @@ describe('TimePicker', () => {
 		await user.keyboard('{ArrowDown}');
 		expect(hour()).toHaveAttribute('aria-valuetext', '07');
 		expect(screen.getByRole('status')).toHaveTextContent('07:30');
+	});
+
+	describe('when the wheel scrolls', () => {
+		// jsdom has no layout: give the numbers a height and let scrollTo move the wheel.
+		const PITCH = 40;
+		const scrollTo = Element.prototype.scrollTo;
+		afterEach(() => {
+			vi.restoreAllMocks();
+			Element.prototype.scrollTo = scrollTo;
+		});
+		const withLayout = () => {
+			vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(PITCH);
+			Element.prototype.scrollTo = function (this: Element, options?: ScrollToOptions | number) {
+				if (typeof options === 'object') this.scrollTop = options.top ?? this.scrollTop;
+			};
+		};
+		const stopOn = (wheel: HTMLElement, position: number) => {
+			wheel.scrollTop = position * PITCH;
+			fireEvent(wheel, new Event('scrollend'));
+		};
+
+		it('reports where the user stopped it', () => {
+			withLayout();
+			const onChange = vi.fn();
+			render(<TimePicker value="07:30" onChange={onChange} />);
+			fireEvent.wheel(hour());
+			stopOn(hour(), 24 * 3 + 9);
+			expect(onChange).toHaveBeenCalledWith('09:30');
+		});
+
+		it('does not report where its own scroll to the value stopped', () => {
+			withLayout();
+			const onChange = vi.fn();
+			render(<TimePicker value="07:30" onChange={onChange} />);
+			// Quick arrow presses cut the wheel's scroll short, between two numbers.
+			stopOn(hour(), 24 * 3 + 9);
+			expect(onChange).not.toHaveBeenCalled();
+			expect((hour().scrollTop / PITCH) % 24).toBe(7);
+		});
 	});
 });
